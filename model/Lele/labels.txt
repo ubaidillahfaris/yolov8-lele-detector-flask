@@ -1,0 +1,3 @@
+0 Andalan Kuning
+1 Andalan merah
+2 faris

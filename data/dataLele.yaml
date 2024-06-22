@@ -1,0 +1,14 @@
+path: datasets # dataset root dir
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 3
+names: ['gradeA', 'gradeB', 'gradeC']
+
+roboflow:
+  workspace: riset-lele
+  project: risetskripsilele
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/riset-lele/risetskripsilele/dataset/2
