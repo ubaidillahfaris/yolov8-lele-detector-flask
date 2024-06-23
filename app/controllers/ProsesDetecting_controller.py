@@ -65,7 +65,6 @@ class ProsesdetectingController:
            
             while cap.isOpened():
                 success, im0 = cap.read()
-                detections = np.empty((0, 5))
                 if not success:
                     print("Video frame is empty or video processing has been successfully completed.")
                     break
@@ -83,6 +82,7 @@ class ProsesdetectingController:
             for grade, values in data_dict.items():
                 total_price = 0
                 out = values['OUT']
+                in_val = values['IN']
 
                 if out > 0:
                     with conn.cursor() as cursor:
@@ -90,12 +90,12 @@ class ProsesdetectingController:
                         cursor.execute(query, (grade,))
                         harga = cursor.fetchone()
                         if harga and len(harga) > 2:
-                            total_price = harga[2] * out 
+                            total_price = harga[2] * (out - in_val)
 
                     PerhitunganLele.create({
                         'grade': grade,
                         'tanggal': datetime.now(),
-                        'jumlah': out,
+                        'jumlah': out - in_val,
                         'harga' : total_price,
                         'file_path' : output_path,
                     })

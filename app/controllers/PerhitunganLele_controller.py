@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request
 from models.PerhitunganLele import PerhitunganLele
 from database.connection import get_connection
-import psycopg2
 
 
 class PerhitunganleleController:
