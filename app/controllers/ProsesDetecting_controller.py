@@ -13,19 +13,12 @@ from database.connection import get_connection
 
 
 class ProsesdetectingController:
-    def proses(self, request):
+    def proses(self, video_path):
        try:
             conn = get_connection()
             # set date now
             today = datetime.now()
             d_m_y_h_m = today.strftime("%d_%m_%Y_%H_%M")
-
-            
-            video_file = request.files['file']
-            upload_dir = 'uploads'
-            os.makedirs(upload_dir, exist_ok=True)
-            video_path = os.path.join(upload_dir, f"{d_m_y_h_m}_{video_file.filename}")
-            video_file.save(video_path)
 
             # file model lele
             model = YOLO("model/Lele/best.pt")
