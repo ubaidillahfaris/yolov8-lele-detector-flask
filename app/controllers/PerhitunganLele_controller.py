@@ -17,7 +17,7 @@ class PerhitunganleleController:
         try:
             table_value = []
             with conn.cursor() as cursor:
-                query = f"SELECT * FROM perhitungan_leles"
+                query = f"SELECT * FROM perhitungan_leles ORDER BY created_at DESC"
                 
                 if tanggal:
                     query += f" WHERE tanggal = %s"

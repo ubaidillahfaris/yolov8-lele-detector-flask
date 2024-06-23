@@ -1,4 +1,5 @@
-from flask import Flask,send_from_directory, jsonify, request
+from flask import Flask,send_from_directory, jsonify, request, render_template
+import asyncio
 from controller.VideoProcessingController import VideoProcessingController
 from datetime import datetime, timedelta
 from database.connection import get_connection, close_connection
@@ -6,12 +7,16 @@ from app.controllers.PerhitunganLele_controller import PerhitunganleleController
 from app.controllers.ProsesDetecting_controller import ProsesdetectingController
 from app.controllers.HargaController_controller import Hargacontroller
 from dotenv import load_dotenv
+from flask_cors import CORS
 import os
 
 load_dotenv()
 
-
 app = Flask(__name__)
+CORS(app)
+
+number_of_threads = 5         ### obviously this is configurable
+
 FILE_DIR = os.path.join(os.getcwd(), 'assets')
 
 @app.route('/', methods=['GET'])
@@ -38,6 +43,14 @@ def show_harga():
 def update_harga(id):
     return Hargacontroller().update(request, id)
 
+@app.route('/harga/create',methods=['POST'])
+def create_harga():
+    return Hargacontroller().store(request)
+
+@app.route('/harga/delete/<id>',methods=['DELETE'])
+def delete_harga(id):
+    return Hargacontroller().delete(id)
+
 
 @app.route('/videos/<filename>', methods=['GET'])
 def get_video(filename):
@@ -50,12 +63,11 @@ def get_video(filename):
         raise e
 
 @app.route('/process_video', methods=['POST'])
-def process_video():
+async def process_video():
     # cek require param
     if 'file' not in request.files:
         return jsonify({'error': 'No video file found in request'}), 400
     param = request
-    # processing video
     ProsesdetectingController().proses(param)
     return jsonify({
         'message': 'Video processing started',
