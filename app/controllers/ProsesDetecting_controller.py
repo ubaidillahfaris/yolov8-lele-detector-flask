@@ -90,7 +90,7 @@ class ProsesdetectingController:
                         'tanggal': datetime.now(),
                         'jumlah': out - in_val,
                         'harga' : total_price,
-                        'file_path' : output_path,
+                        'file_path' : f"videos/{d_m_y_h_m}_object_counting_output.mp4",
                     })
 
             # Release video resources
