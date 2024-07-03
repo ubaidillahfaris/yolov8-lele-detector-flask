@@ -5,12 +5,17 @@ from ultralytics.solutions import object_counter
 import cv2
 import torch
 import os
-import math
 import numpy as np 
 from models.PerhitunganLele import PerhitunganLele
 from models.harga import Harga
 from database.connection import get_connection
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
+import joblib
+# from sklearn.neighbors import KNeighborsClassifier
+# import sklearn.metrics
 
 class ProsesdetectingController:
     def proses(self, video_path):
@@ -101,18 +106,59 @@ class ProsesdetectingController:
        except Exception as e:
         raise e;
 
-    def show(self, id):
-        # Code to fetch a single record by ID
-        pass
+    def prosesKnn(self, video_path):
+        try:
+            # set date now
+            today = datetime.now()
+            d_m_y_h_m = today.strftime("%d_%m_%Y_%H_%M")
 
-    def store(self):
-        # Code to store a new record
-        pass
+            
+            # file model lele
+            model = YOLO("model/Lele/best.pt")
 
-    def update(self, id):
-        # Code to update a record by ID
-        pass
+            # Memuat model KNN yang telah dilatih sebelumnya
+            knn = joblib.load('model/Lele/knn_model.pkl')
+            
+            
+            save_video_dir = 'assets/videos'
+            os.makedirs(save_video_dir, exist_ok=True)
+            output_video_path = os.path.join(save_video_dir, f"{d_m_y_h_m}_knn_object_counting_output.mp4")
 
-    def delete(self, id):
-        # Code to delete a record by ID
-        pass
+            cap = cv2.VideoCapture(video_path)
+            if not cap.isOpened():
+                print("Error: Tidak bisa memuat video.")
+                return
+
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            print(f"FPS pada video: {fps}")
+
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            out = cv2.VideoWriter(output_video_path, fourcc, fps, (int(cap.get(3)), int(cap.get(4))))
+
+            while cap.isOpened():
+                ret, frame = cap.read()
+                if not ret:
+                    break
+
+                results = model(frame)
+
+                for result in results:
+                    for box in result.boxes:
+                        x1, y1, x2, y2 = box.xyxy[0].cpu().numpy().astype(int)
+                        w = x2 - x1
+                        h = y2 - y1
+                        confidence = box.conf.cpu().numpy()[0]
+
+                        pred_label = knn.predict([[w, h]])[0]
+
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                        label_text = f"Label: {pred_label}, Conf: {confidence:.2f}"
+                        cv2.putText(frame, label_text, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
+                out.write(frame)
+
+            cap.release()
+            out.release()
+        except Exception as e:
+            print("ERROR::")
+            raise e

@@ -93,6 +93,7 @@ def process_job(job_id):
         try:
             # Lakukan pemrosesan video di sini
             ProsesdetectingController().proses(file_path)
+            ProsesdetectingController().prosesKnn(file_path)
             cur.execute("DELETE FROM job_queue WHERE id = %s;", (job_id,))
             conn.commit()
         except Exception as e:
@@ -104,7 +105,6 @@ def worker():
     conn = get_connection()  # Open the database connection outside the loop
     while True:
         job_id = get_next_job()
-        print(job_id);
         if job_id:
             process_job(job_id)
         time.sleep(20)  # Add a 1-second delay between each iteration of the loop
