@@ -30,6 +30,13 @@ def delete():
 def show():
     return PerhitunganleleController().show(request)
 
+@app.route('/perhitungan/delete/<id>', methods=['DELETE'])
+def delete_riwayat(id):
+    return PerhitunganleleController().delete(id)
+
+
+
+
 @app.route('/harga/show',methods=['GET'])
 def show_harga():
     return Hargacontroller().show(request)

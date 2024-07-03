@@ -68,11 +68,12 @@ class PerhitunganleleController:
         # Code to update a record by ID
         pass
 
-    def delete(self, *id):
+    def delete(self, id):
         try:
-            
-            value = PerhitunganLele().delete_all()
-            print(value)
+            conn = get_connection()
+            cur = conn.cursor()
+            cur.execute("DELETE FROM perhitungan_leles WHERE id = %s;", (id,))
+
             return jsonify({
                     'message' : 'Data perhitungan lele dihapus'
             })
