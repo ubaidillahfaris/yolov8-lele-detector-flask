@@ -99,7 +99,7 @@ def process_job(job_id):
         file_path = job[0]
         try:
             # Lakukan pemrosesan video di sini
-            ProsesdetectingController().proses(file_path)
+            # ProsesdetectingController().proses(file_path)
             ProsesdetectingController().prosesKnn(file_path)
             cur.execute("DELETE FROM job_queue WHERE id = %s;", (job_id,))
             conn.commit()
@@ -124,6 +124,7 @@ def process_video():
     if 'file' not in request.files:
         return jsonify({'error': 'No video file found in request'}), 400
     
+    print(request.files);
     today = datetime.now()
     d_m_y_h_m = today.strftime("%d_%m_%Y_%H_%M")
 
@@ -150,4 +151,4 @@ def main():
 if __name__ == "__main__":
     main()
     from waitress import serve
-    serve(app, host=os.getenv('APP_HOST','127.0.0.1'), port=os.getenv('APP_PORT',8000), threads=4)
+    serve(app, host='192.168.18.106', port=os.getenv('APP_PORT',8000), threads=4)

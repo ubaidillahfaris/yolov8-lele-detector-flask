@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from models.PerhitunganLele import PerhitunganLele
-from database.connection import get_connection
+from database.connection import get_connection,close_connection
 
 
 class PerhitunganleleController:
@@ -73,6 +73,8 @@ class PerhitunganleleController:
             conn = get_connection()
             cur = conn.cursor()
             cur.execute("DELETE FROM perhitungan_leles WHERE id = %s;", (id,))
+            conn.commit()
+            close_connection()
 
             return jsonify({
                     'message' : 'Data perhitungan lele dihapus'
