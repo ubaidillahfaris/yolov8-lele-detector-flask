@@ -28,6 +28,7 @@ class Model:
                 
                 new_id = cursor.fetchone()[0]
                 conn.commit()
+                return new_id;
 
         except psycopg2.Error as error:
             print(f"Error creating record: {error}")
