@@ -179,4 +179,4 @@ def main():
 if __name__ == "__main__":
     main()
     from waitress import serve
-    serve(app, host='192.168.18.228', port=os.getenv('APP_PORT',8000), threads=4)
+    serve(app, host='192.168.18.106', port=os.getenv('APP_PORT',8000), threads=4)

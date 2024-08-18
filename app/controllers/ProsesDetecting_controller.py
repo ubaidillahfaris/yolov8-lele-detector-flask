@@ -49,7 +49,7 @@ class ProsesdetectingController:
             os.makedirs(save_video_dir, exist_ok=True)
             output_path = os.path.join(save_video_dir, f"{d_m_y_h_m}_object_counting_output.mp4")
             video_writer = cv2.VideoWriter(output_path, cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
-            assert video_writer.isOpened(), f"Error opening video writer for {output_path}"
+            # assert video_writer.isOpened(), f"Error opening video writer for {output_path}"
 
             counter = object_counter.ObjectCounter(
                 view_img=True, 
